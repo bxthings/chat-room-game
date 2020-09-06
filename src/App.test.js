@@ -2,8 +2,9 @@ import React from 'react';
 import { render } from '@testing-library/react';
 import App from './App';
 
-test('renders learn react link', () => {
+// TODO add tests that are more meaningful on the functionality
+test('renders join form', () => {
   const { getByText } = render(<App />);
-  const linkElement = getByText(/learn react/i);
+  const linkElement = getByText(/room name to join/i);
   expect(linkElement).toBeInTheDocument();
 });
