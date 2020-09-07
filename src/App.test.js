@@ -8,3 +8,4 @@ test('renders join form', () => {
   const linkElement = getByText(/room name to join/i);
   expect(linkElement).toBeInTheDocument();
 });
+

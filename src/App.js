@@ -1,6 +1,7 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
+import roomConfig from './Room.json';
 
 class App extends React.Component {
   constructor(props) {
@@ -8,9 +9,32 @@ class App extends React.Component {
     this.state = {
       nextRoom: '',
       currentRoom: null,
+      roomMessage: '',
     };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.openRoom = this.openRoom.bind(this);
+    this.roomEntry = React.createRef();
+  }
+
+  openRoom(roomKey) {
+    if (roomKey in roomConfig) {
+      window.open(roomConfig[roomKey].link, '_blank');
+      this.setState({
+        roomMessage: "You have joined the " + roomConfig[roomKey].name + " room.",
+        nextRoom: '',
+        currentRoom: roomKey,
+      });
+    } else {
+      this.setState({
+        roomMessage: "You can't find the " + roomKey.toUpperCase() + " room.",
+        nextRoom: '',
+      });
+    }
+  }
+
+  componentDidMount() {
+    this.roomEntry.current.focus();
   }
 
   handleChange(event) {
@@ -20,25 +44,11 @@ class App extends React.Component {
   }
 
   handleSubmit(event) {
-    // TODO open the real chat room link that matches the room
-    window.open('https://www.bing.com/search?q=' + this.state.nextRoom, '_blank');
-    this.setState({
-      nextRoom: '',
-      currentRoom: this.state.nextRoom,
-    });
     event.preventDefault();
+    this.openRoom(this.state.nextRoom.toLowerCase());
   }
 
   render() {
-    let footer = '';
-    if (this.state.currentRoom) {
-      footer = <footer>
-        <p>
-          You have joined the {this.state.currentRoom} room.
-        </p>
-      </footer>
-    };
-
     return (
       <div className="App">
         <header>
@@ -51,7 +61,7 @@ class App extends React.Component {
                 Type in a room name to join it.
               </p>
               <p>
-                <input type="text" name="room-entry" value={this.state.nextRoom} onChange={this.handleChange}/>
+                <input type="text" name="room-entry" value={this.state.nextRoom} onChange={this.handleChange} ref={this.roomEntry}/>
               </p>
             </label>
             <p>
@@ -59,10 +69,15 @@ class App extends React.Component {
             </p>
           </form>
         </main>
-        {footer}
+        <footer>
+          <p>
+            {this.state.roomMessage}
+          </p>
+        </footer>
       </div>
     );
   }
 }
 
 export default App;
+
